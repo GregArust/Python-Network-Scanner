@@ -1,64 +1,57 @@
-import customtkinter as ctk
-from scanner import scan_network, port_scan  # Make sure these are real in scanner.py
+# gui.py
 
+import customtkinter as ctk
+
+# Debug print to confirm the file is running
+print("Starting GUI...")
+
+# Set appearance mode and color theme
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
+# Create the main window
 app = ctk.CTk()
 app.title("Network Scanner Tool")
-app.geometry("700x600")
+app.geometry("600x500")
 
-# --- Input Fields ---
+# Debug label to confirm window creation
+debug_label = ctk.CTkLabel(app, text="GUI Initialized!")
+debug_label.pack(pady=(10, 10))
 
-ip_label = ctk.CTkLabel(app, text="Enter IP range (CIDR or start-end):")
+# IP Range Label and Entry
+ip_label = ctk.CTkLabel(app, text="Enter IP range (CIDR e.g., 192.168.1.0/24 or start-end e.g., 192.168.1.1-192.168.1.254):")
 ip_label.pack(pady=(20, 5))
 
 ip_entry = ctk.CTkEntry(app, placeholder_text="e.g., 192.168.1.0/24 or 192.168.1.1-192.168.1.254")
 ip_entry.pack(pady=(0, 20), padx=20, fill="x")
 
+# Port Range Label and Entry
 port_label = ctk.CTkLabel(app, text="Enter Port range (e.g., 20-1024):")
 port_label.pack(pady=(0, 5))
 
 port_entry = ctk.CTkEntry(app, placeholder_text="e.g., 20-1024")
 port_entry.pack(pady=(0, 20), padx=20, fill="x")
 
-# --- Results Box ---
-results_box = ctk.CTkTextbox(app, width=600, height=300)
-results_box.pack(pady=(10, 20), padx=20)
-
-# --- Scan Button Logic ---
+# Button to start the scan with a debug callback
 def start_scan():
     ip_range = ip_entry.get()
     port_range = port_entry.get()
-
-    # Clear old results
-    results_box.delete("1.0", "end")
-
-    # Validate port input
-    try:
-        start_port, end_port = map(int, port_range.split("-"))
-        ports = list(range(start_port, end_port + 1))
-    except:
-        results_box.insert("end", "❌ Invalid port range.\n")
-        return
-
-    results_box.insert("end", f"🔍 Scanning IPs in {ip_range}...\n")
-    live_hosts = scan_network(ip_range)
-
-    if not live_hosts:
-        results_box.insert("end", "⚠️ No live hosts found.\n")
-        return
-
-    for host in live_hosts:
-        results_box.insert("end", f"\n✅ {host} is online\n")
-        open_ports = port_scan(host, start_port, end_port)
-        if open_ports:
-            for port, service in open_ports:
-                results_box.insert("end", f"  - Open Port {port} ({service})\n")
-        else:
-            results_box.insert("end", "  No open ports found.\n")
+    print("Start Scan button pressed.")
+    print("IP Range:", ip_range)
+    print("Port Range:", port_range)
+    # Here you can later integrate your scanning functions
+    # For example:
+    # live_hosts = scan_network(ip_range)
+    # And update the GUI with the results
 
 scan_button = ctk.CTkButton(app, text="Start Scan", command=start_scan)
 scan_button.pack(pady=(0, 20))
 
+# Debug print before launching the main loop
+print("Launching GUI main loop...")
+
+# Start the GUI event loop
 app.mainloop()
+
+# Debug print after the main loop (note: this line usually won't execute until the window is closed)
+print("GUI has been closed.")

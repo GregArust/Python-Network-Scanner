@@ -1,10 +1,11 @@
 # utils.py
 
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from the .env file
+
 import requests
-# Optional: Uncomment and set your Shodan API key if you want to use Shodan lookups.
-# import shodan
-# SHODAN_API_KEY = "your_api_key_here"
-# api = shodan.Shodan(SHODAN_API_KEY)
+import shodan  # Ensure you have installed shodan: pip install shodan
 
 def get_geoip_info(ip):
     """
@@ -24,20 +25,27 @@ def get_geoip_info(ip):
     except Exception:
         return None
 
-# Optional Shodan lookup function
-# def shodan_lookup(ip):
-#     """
-#     Query the Shodan API for information about the given IP.
-#     
-#     Returns:
-#         dict or None: A dictionary containing 'org', 'hostnames', 'open_ports' or None on failure.
-#     """
-#     try:
-#         host = api.host(ip)
-#         return {
-#             "org": host.get("org"),
-#             "hostnames": host.get("hostnames"),
-#             "open_ports": host.get("ports")
-#         }
-#     except Exception:
-#         return None
+def shodan_lookup(ip):
+    """
+    Query the Shodan API for information about the given IP.
+    
+    Returns:
+        dict or None: A dictionary containing 'org', 'hostnames', 'open_ports' or None on failure.
+    """
+    SHODAN_API_KEY = os.getenv("SHODAN_API_KEY")
+    if not SHODAN_API_KEY:
+        print("❌ Shodan API key not found in environment.")
+        return None
+
+    api = shodan.Shodan(SHODAN_API_KEY)
+
+    try:
+        host = api.host(ip)
+        return {
+            "org": host.get("org"),
+            "hostnames": host.get("hostnames"),
+            "open_ports": host.get("ports")
+        }
+    except Exception as e:
+        print(f"Shodan lookup failed for {ip}: {e}")
+        return None

@@ -4,16 +4,14 @@ import os
 import csv
 from datetime import datetime
 from network_scanner_tool.scanner import scan_network, port_scan
-from network_scanner_tool.utils import get_geoip_info
-# Optional: Uncomment to enable Shodan lookups
-# from network_scanner_tool.utils import shodan_lookup
+from network_scanner_tool.utils import get_geoip_info, shodan_lookup
 
 def save_results_to_csv(results):
     """
     Save the scan results to a CSV file inside a /logs folder.
     
     Args:
-        results (list): A list of dictionaries with keys 'IP', 'Open Ports', and 'Timestamp'.
+        results (list): A list of dictionaries with keys 'IP', 'Open Ports', 'GeoIP Info', and 'Timestamp'.
     """
     logs_folder = 'logs'
     if not os.path.exists(logs_folder):
@@ -50,7 +48,8 @@ def main():
     print("\nLive hosts detected:")
     for host in live_hosts:
         print(f"\nHost: {host}")
-        # Get GeoIP info
+        
+        # GeoIP lookup
         geo_info = get_geoip_info(host)
         if geo_info:
             print("Location Info:")
@@ -60,13 +59,15 @@ def main():
         else:
             print("No GeoIP information available.")
         
-        # Optional: Uncomment the following to perform Shodan lookup
-        # shodan_info = shodan_lookup(host)
-        # if shodan_info:
-        #     print("Shodan Info:")
-        #     print(f"  Organization: {shodan_info.get('org')}")
-        #     print(f"  Hostnames: {shodan_info.get('hostnames')}")
-        #     print(f"  Open Ports: {shodan_info.get('open_ports')}")
+        # Shodan lookup
+        shodan_info = shodan_lookup(host)
+        if shodan_info:
+            print("🌐 Shodan Info:")
+            print(f"  Org: {shodan_info.get('org')}")
+            print(f"  Hostnames: {shodan_info.get('hostnames')}")
+            print(f"  Open Ports: {shodan_info.get('open_ports')}")
+        else:
+            print("Shodan data not available.")
         
         print(f"\nScanning ports on {host} (ports {start_port} to {end_port}):")
         open_ports = port_scan(host, start_port, end_port)
