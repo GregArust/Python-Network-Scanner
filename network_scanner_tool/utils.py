@@ -1,11 +1,10 @@
-# utils.py
-
 import os
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from the .env file
 
 import requests
 import shodan  # Ensure you have installed shodan: pip install shodan
+import ipaddress
 
 def get_geoip_info(ip):
     """
@@ -32,6 +31,15 @@ def shodan_lookup(ip):
     Returns:
         dict or None: A dictionary containing 'org', 'hostnames', 'open_ports' or None on failure.
     """
+    # Skip private/internal IPs that Shodan cannot look up
+    try:
+        if ipaddress.ip_address(ip).is_private:
+            print(f"ℹ️ Skipping Shodan lookup for private IP: {ip}")
+            return None
+    except ValueError:
+        print(f"⚠️ Invalid IP address: {ip}")
+        return None
+
     SHODAN_API_KEY = os.getenv("SHODAN_API_KEY")
     if not SHODAN_API_KEY:
         print("❌ Shodan API key not found in environment.")
