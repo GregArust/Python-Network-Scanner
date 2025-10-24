@@ -19,9 +19,6 @@ A Python-based network scanner tool that detects live hosts, scans open ports wi
 - **Logging & Export:**  
   Saves scan results (IP, open ports with banners, GeoIP info, and timestamp) to a CSV file in a `/logs` folder.
 
-- **Future GUI:**  
-  A graphical user interface (GUI) is planned for future releases. (See **Future Work** below for details.)
-
 ## Requirements
 
 - Python 3.6+
