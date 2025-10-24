@@ -1,6 +1,6 @@
 # Network Scanner Tool
 
-A Python-based network scanner tool that detects live hosts, scans open ports with banner grabbing, performs GeoIP lookups, and logs/export results to CSV. This project is designed as a portfolio-worthy tool and will eventually include a graphical user interface (GUI).
+A Python-based network scanner tool that detects live hosts, scans open ports with banner grabbing, performs GeoIP lookups, and logs/export results to CSV.
 
 ## Features
 
