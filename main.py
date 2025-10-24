@@ -60,14 +60,13 @@ def main():
         # Shodan lookup
         shodan_info = shodan_lookup(host)
         if shodan_info:
-            print("🌐 Shodan Info:")
+            print(" Shodan Info:")
             print(f"  Org: {shodan_info.get('org')}")
             print(f"  Hostnames: {', '.join(shodan_info.get('hostnames', []))}")
             print(f"  Open Ports: {shodan_info.get('open_ports')}")
 
-            # 🚨 Add public exposure alert
             if shodan_info.get("open_ports"):
-                print("🚨 This host appears to be publicly exposed on the internet!\n")
+                print("This host appears to be publicly exposed on the internet!\n")
         else:
             print("Shodan data not available.")
         
